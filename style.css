@@ -15,9 +15,9 @@ body {
 }
 .enemy1 {
     background: url("1942.gif");
-    background-position: -30px -10px;
-    width: 28px;
-    height: 28px;
+    background-position: -56px -62px;
+    width: 20px;
+    height: 20px;
     position: absolute;
 }
 .bullet {
@@ -39,9 +39,9 @@ body {
 }
 .enemy2 {
     background: url("1942.gif");
-    background-position: -56px -62px;
-    width: 20px;
-    height: 20px;
+    background-position: -30px -10px;
+    width: 28px;
+    height: 28px;
     position: absolute;
 }
 .enemy3 {

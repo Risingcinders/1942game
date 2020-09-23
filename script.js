@@ -1,18 +1,4 @@
-//move the hero
-//display hero
-//display enemies
-//make enemies move
-//make shoot bullet
-//make bullets move
-//make bullets kill dude
-// (easy) Get the hero to move up/down/left/right
-//  (easy) Change the background of the game
-//  (easy) Get 7 enemies to show up instead of 4 at a time
-//  (intermediate) Get another type of enemy airplane to show up
-//  (advanced) Collision Detection for the airplanes – when the hero collides with the enemy, have your score go down by 500.
-//  (advanced) Collision Detection for the bullet – Have the score go up by 10 when an enemy is struck down.
-//  (advanced) Get the enemy to explode when it is hit
-//  (advanced) When the bullet hits, make a sound.
+var score = 0;
 
 var hero = {
     x: 300,
@@ -29,16 +15,14 @@ var enemies = [
     { x: 130, y: 130, z: 90, hp: 1, type: 2 },
     { x: 140, y: 150, z: 90, hp: 1, type: 2 },
     { x: 150, y: 170, z: 90, hp: 1, type: 2 },
-    { x: 50, y: 100, z: 270, hp: 1, type: 3 },
-    { x: 250, y: 100, z: 270, hp: 1, type: 3 },
-    { x: 450, y: 100, z: 270, hp: 1, type: 3 },
+    { x: 50, y: 100, z: 270, hp: 3, type: 3 },
+    { x: 250, y: 100, z: 270, hp: 3, type: 3 },
+    { x: 450, y: 100, z: 270, hp: 3, type: 3 },
 ];
 
-var explosions = [{ x: 50, y: 50, size: 0 }];
+var explosions = [{ x: 50, y: 50, size: 0, stage: 0 }];
 
-var bullets = [
-    { x: 0, y: 0, ratey: 1, z: 0 }
-];
+var bullets = [{ x: 0, y: 0, ratey: 1, z: 0 }];
 
 function displayEnemies() {
     var output = "";
@@ -70,7 +54,13 @@ function explosion() {
             explosions[i].size +
             ", " +
             explosions[i].size +
-            " );'></div>";
+            " ); background-position: " +
+            (((explosions[i].stage) - 1) * 30 - 116) +
+            "px -35px;'></div>";
+        explosions[i].stage--;
+        if (explosions[i].stage <= 0) {
+            explosions.splice(i, 1);
+        }
     }
     document.getElementById("explosions").innerHTML = output;
 }
@@ -105,9 +95,9 @@ function displayHero() {
     } else {
         hero.x = 979;
     }
-
     document.getElementById("hero").style.top = hero.y + "px";
     document.getElementById("hero").style.left = hero.x + "px";
+    document.getElementById("hero").style.transform = "scaleX(" + (1-(Math.abs(hero.ratex) * .25)) + ")";
 }
 
 function moveEnemies() {
@@ -135,7 +125,12 @@ function moveEnemies() {
             enemies[i].x = enemies[i].type * 30 + 1;
         }
         if (enemies[i].hp <= 0) {
-            explosions.push({x: enemies[i].x, y: enemies[i].y, size: enemies[i].type});
+            explosions.push({
+                x: enemies[i].x,
+                y: enemies[i].y,
+                size: enemies[i].type,
+                stage: 2,
+            });
             enemies.splice(i, 1);
         }
     }
@@ -157,17 +152,17 @@ function moveBullets() {
         }
     }
 }
-var score = 0;
+
 function detectCollision() {
     for (i = 0; i < enemies.length; i++) {
         if (
-            hero.x >= enemies[i].x - 20 &&
-            hero.x <= enemies[i].x + 20 &&
-            hero.y >= enemies[i].y - 20 &&
-            hero.y <= enemies[i].y + 20
+            hero.x >= enemies[i].x - 0 &&
+            hero.x <= enemies[i].x + 10 * enemies[i].type + 5 &&
+            hero.y >= enemies[i].y - 0 &&
+            hero.y <= enemies[i].y + 10 * enemies[i].type + 5
         ) {
             // console.log("GOTCHA CRASH BOOM");
-            score -= 5;
+            score -= 25;
         }
     }
 }
@@ -176,14 +171,14 @@ function detectBulletCollision() {
     for (i = 0; i < enemies.length; i++) {
         for (j = 0; j < bullets.length; j++) {
             if (
-                bullets[j].x >= enemies[i].x - 20 &&
-                bullets[j].x <= enemies[i].x + 20 &&
-                bullets[j].y >= enemies[i].y - 20 &&
-                bullets[j].y <= enemies[i].y + 20
+                bullets[j].x >= enemies[i].x - 0 &&
+                bullets[j].x <= enemies[i].x + 10 * enemies[i].type + 5 &&
+                bullets[j].y >= enemies[i].y - 0 &&
+                bullets[j].y <= enemies[i].y + 10 * enemies[i].type + 5
             ) {
-                // console.log("GOTCHA CRASH BOOM");
-                score += 500;
-                enemies[i].hp -=1
+                score += 100;
+                enemies[i].hp -= 1;
+                bullets.splice(j, 1);
             }
         }
     }
@@ -192,12 +187,6 @@ function detectBulletCollision() {
 function updateScore() {
     document.getElementById("score").innerHTML = score;
 }
-
-// bulletMovement{ }
-
-displayHero();
-displayEnemies();
-displayBullets();
 
 function gameLoop() {
     moveEnemies();
@@ -211,13 +200,11 @@ function gameLoop() {
     explosion();
 }
 
-setInterval(gameLoop, 10);
-
 function spawnBullet() {
     bullets.push({ x: hero.x, y: hero.y, ratey: hero.ratey, z: hero.z });
 }
 
-// 1000 x 563
+setInterval(gameLoop, 10);
 
 document.onkeydown = function (e) {
     if (e.keyCode == 39 && hero.ratex <= 3) {
@@ -233,9 +220,6 @@ document.onkeydown = function (e) {
         hero.ratey += 1;
     }
     if (e.keyCode == 32) {
-        // hero.ratey += 1;
-        console.log("BANG");
         spawnBullet();
     }
-    // console.log(e);
 };
