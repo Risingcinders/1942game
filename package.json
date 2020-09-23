@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/W0mpRat/1942game.git"
+    "url": "https://github.com/Risingcinders/1942game.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/W0mpRat/1942game/issues"
+    "url": "https://github.com/Risingcinders/1942game/issues"
   },
-  "homepage": "https://github.com/W0mpRat/1942game#readme",
+  "homepage": "https://github.com/Risingcinders/1942game#readme",
   "dependencies": {
     "express": "^4.17.1"
   }
