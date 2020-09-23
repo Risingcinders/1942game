@@ -55,9 +55,9 @@ function explosion() {
             ", " +
             explosions[i].size +
             " ); background-position: " +
-            (((explosions[i].stage) - 1) * 30 - 116) +
+            ((Math.ceil(explosions[i].stage)*10 - 10) * 3 - 116) +
             "px -35px;'></div>";
-        explosions[i].stage--;
+        explosions[i].stage -= .1;
         if (explosions[i].stage <= 0) {
             explosions.splice(i, 1);
         }
@@ -207,16 +207,16 @@ function spawnBullet() {
 setInterval(gameLoop, 10);
 
 document.onkeydown = function (e) {
-    if (e.keyCode == 39 && hero.ratex <= 3) {
+    if (e.keyCode == 39 && hero.ratex < 3) {
         hero.ratex += 1;
     }
-    if (e.keyCode == 38 && hero.ratey >= -3) {
+    if (e.keyCode == 38 && hero.ratey > -3) {
         hero.ratey -= 1;
     }
-    if (e.keyCode == 37 && hero.ratex >= -3) {
+    if (e.keyCode == 37 && hero.ratex > -3) {
         hero.ratex -= 1;
     }
-    if (e.keyCode == 40 && hero.ratey <= 3) {
+    if (e.keyCode == 40 && hero.ratey < 3) {
         hero.ratey += 1;
     }
     if (e.keyCode == 32) {
